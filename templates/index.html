@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PneumoAI | AI Pneumonia Detection</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+<nav class="navbar">
+
+    <div class="logo">
+        <div class="logo-icon">🫁</div>
+
+        <div class="logo-text">
+            <strong>PneumoAI</strong>
+            <span>Medical AI Platform</span>
+        </div>
+    </div>
+
+    <div class="system-status">
+        <span class="status-dot"></span>
+        AI SYSTEM ONLINE
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN HERO / DASHBOARD
+===================================================== -->
+<main class="main-dashboard">
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                <span>✦</span>
+                AI-POWERED MEDICAL ANALYSIS
+            </div>
+
+            <h1>
+                Pneumonia Detection
+                <span>from Chest X-Rays</span>
+            </h1>
+
+            <p>
+                Upload a chest X-ray and let our deep learning
+                system analyze it using a trained VGG16 model.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         MAIN AI WORKSPACE
+    ================================================= -->
+    <section class="workspace">
+
+        <!-- ================= UPLOAD ================= -->
+
+        <div class="card upload-card">
+
+            <div class="card-header">
+
+                <div>
+                    <div class="mini-label">
+                        STEP 01
+                    </div>
+
+                    <h2>
+                        Upload X-Ray
+                    </h2>
+
+                    <p>
+                        Select a chest X-ray image
+                    </p>
+                </div>
+
+                <div class="card-icon">
+                    📤
+                </div>
+
+            </div>
+
+
+            <!-- Upload Area -->
+
+            <div
+                class="upload-area"
+                id="uploadArea"
+            >
+
+                <div class="upload-icon">
+                    🩻
+                </div>
+
+                <h3>
+                    Drop your X-ray here
+                </h3>
+
+                <p>
+                    or browse from your computer
+                </p>
+
+                <span class="file-info">
+                    JPG • JPEG • PNG
+                </span>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                    hidden
+                >
+
+                <button
+                    type="button"
+                    class="browse-btn"
+                    id="browseBtn"
+                >
+                    Choose X-Ray
+                </button>
+
+            </div>
+
+
+            <!-- ================= PREVIEW ================= -->
+
+            <div
+                class="preview-container"
+                id="previewContainer"
+                style="display:none;"
+            >
+
+                <div class="preview-header">
+
+                    <h3>
+                        Selected X-Ray
+                    </h3>
+
+                    <button
+                        type="button"
+                        id="removeBtn"
+                        class="remove-btn"
+                    >
+                        ✕ Remove
+                    </button>
+
+                </div>
+
+                <div class="image-preview">
+
+                    <img
+                        id="previewImage"
+                        src=""
+                        alt="Chest X-Ray Preview"
+                    >
+
+                </div>
+
+                <p
+                    id="fileName"
+                    class="file-name"
+                ></p>
+
+            </div>
+
+
+            <!-- ================= ANALYZE ================= -->
+
+            <button
+                type="button"
+                class="analyze-btn"
+                id="analyzeBtn"
+                disabled
+            >
+
+                <span>✦</span>
+
+                Analyze X-Ray
+
+                <span class="arrow">
+                    →
+                </span>
+
+            </button>
+
+
+            <!-- ================= LOADING ================= -->
+
+            <div
+                class="loading"
+                id="loading"
+                style="display:none;"
+            >
+
+                <div class="spinner"></div>
+
+                <div>
+                    <h3>
+                        AI is analyzing...
+                    </h3>
+
+                    <p>
+                        VGG16 model is processing the X-ray
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= DIAGNOSIS ================= -->
+
+        <div
+            class="card diagnosis-card"
+            id="diagnosisCard"
+        >
+
+            <div class="card-header">
+
+                <div>
+
+                    <div class="mini-label">
+                        STEP 02
+                    </div>
+
+                    <h2>
+                        AI Diagnosis
+                    </h2>
+
+                    <p>
+                        Deep learning prediction
+                    </p>
+
+                </div>
+
+                <div class="card-icon ai-icon">
+                    🧠
+                </div>
+
+            </div>
+
+
+            <!-- ================= EMPTY STATE ================= -->
+
+            <div
+                class="diagnosis-empty"
+                id="diagnosisEmpty"
+            >
+
+                <div class="empty-icon">
+                    🔬
+                </div>
+
+                <h3>
+                    Ready for Analysis
+                </h3>
+
+                <p>
+                    Upload an X-ray and click
+                    <strong>Analyze X-Ray</strong>
+                    to start.
+                </p>
+
+                <div class="ready-status">
+                    <span></span>
+                    Model Ready
+                </div>
+
+            </div>
+
+
+            <!-- ================= RESULT ================= -->
+
+            <div
+                class="result-container"
+                id="resultContainer"
+                style="display:none;"
+            >
+
+                <div
+                    class="result-icon"
+                    id="resultIcon"
+                >
+                    ✓
+                </div>
+
+                <div class="result-label">
+                    AI PREDICTION
+                </div>
+
+                <h2
+                    id="predictionResult"
+                    class="prediction-result"
+                >
+                    NORMAL
+                </h2>
+
+                <div
+                    id="predictionMessage"
+                    class="prediction-message"
+                >
+                    ✓ No Pneumonia Detected
+                </div>
+
+
+                <!-- Confidence -->
+
+                <div class="confidence-section">
+
+                    <div class="confidence-header">
+
+                        <span>
+                            Model Confidence
+                        </span>
+
+                        <strong id="confidenceValue">
+                            0%
+                        </strong>
+
+                    </div>
+
+                    <div class="confidence-bar">
+
+                        <div
+                            class="confidence-fill"
+                            id="confidenceFill"
+                            style="width:0%;"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <p
+                    class="result-description"
+                    id="resultDescription"
+                >
+                    X-ray appears normal according to the AI model.
+                </p>
+
+
+                <div
+                    class="warning-box"
+                    id="warningBox"
+                    style="display:none;"
+                >
+
+                    ⚠️ Possible signs of pneumonia detected.
+                    Please consult a qualified healthcare
+                    professional for proper diagnosis.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         QUICK STATS
+    ================================================= -->
+
+    <section class="quick-stats">
+
+        <div class="stat-card">
+
+            <span class="stat-icon">🧠</span>
+
+            <div>
+                <strong>VGG16</strong>
+                <small>Architecture</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-icon">🎯</span>
+
+            <div>
+                <strong>83.33%</strong>
+                <small>Test Accuracy</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-icon">🖼️</span>
+
+            <div>
+                <strong>224 × 224</strong>
+                <small>Input Resolution</small>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-icon">⚡</span>
+
+            <div>
+                <strong>AI Powered</strong>
+                <small>Real-time Analysis</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         MODEL PERFORMANCE
+    ================================================= -->
+
+    <section class="card performance-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <div class="mini-label">
+                    MODEL EVALUATION
+                </div>
+
+                <h2>
+                    Model Performance
+                </h2>
+
+                <p>
+                    Comparison of trained deep learning models
+                </p>
+
+            </div>
+
+            <div class="card-icon">
+                📊
+            </div>
+
+        </div>
+
+
+        <!-- Accuracy -->
+
+        <div class="accuracy-highlight">
+
+            <div>
+
+                <span class="metric-label">
+                    FINAL MODEL ACCURACY
+                </span>
+
+                <h3>
+                    83.33%
+                </h3>
+
+                <p>
+                    VGG16 + Threshold 0.70
+                </p>
+
+            </div>
+
+            <div class="accuracy-icon">
+                🏆
+            </div>
+
+        </div>
+
+
+        <h3 class="section-title">
+            Model Comparison
+        </h3>
+
+
+        <div class="model-list">
+
+            <!-- Model 01 -->
+
+            <div class="model-row">
+
+                <div class="model-name">
+
+                    <span class="model-number">
+                        01
+                    </span>
+
+                    <span>
+                        Custom CNN
+                    </span>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            style="width:74.52%;"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                <strong>
+                    74.52%
+                </strong>
+
+            </div>
+
+
+            <!-- Model 02 -->
+
+            <div class="model-row">
+
+                <div class="model-name">
+
+                    <span class="model-number">
+                        02
+                    </span>
+
+                    <span>
+                        VGG16 + Fine-Tuning
+                    </span>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            style="width:78.85%;"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                <strong>
+                    78.85%
+                </strong>
+
+            </div>
+
+
+            <!-- Model 03 -->
+
+            <div class="model-row">
+
+                <div class="model-name">
+
+                    <span class="model-number">
+                        03
+                    </span>
+
+                    <span>
+                        VGG16 + Class Weight
+                    </span>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div class="progress-bar">
+
+                        <div class="progress-fill"
+                             style="width:82.21%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <strong>
+                    82.21%
+                </strong>
+
+            </div>
+
+
+            <!-- Best Model -->
+
+            <div class="model-row best-model">
+
+                <div class="model-name">
+
+                    <span class="model-number">
+                        04
+                    </span>
+
+                    <span>
+                        VGG16 + Threshold 0.70
+                    </span>
+
+                    <span class="best-badge">
+                        BEST
+                    </span>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div class="progress-bar">
+
+                        <div class="progress-fill"
+                             style="width:83.33%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <strong>
+                    83.33%
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CONFUSION MATRIX
+    ================================================= -->
+
+    <section class="card confusion-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <div class="mini-label">
+                    CLASSIFICATION RESULTS
+                </div>
+
+                <h2>
+                    Confusion Matrix
+                </h2>
+
+                <p>
+                    Final model — Threshold 0.70
+                </p>
+
+            </div>
+
+            <div class="card-icon">
+                🧮
+            </div>
+
+        </div>
+
+
+        <div class="matrix-wrapper">
+
+            <div class="matrix-axis-label">
+                Predicted
+            </div>
+
+            <div class="matrix">
+
+                <div class="matrix-cell matrix-header"></div>
+
+                <div class="matrix-cell matrix-header">
+                    NORMAL
+                </div>
+
+                <div class="matrix-cell matrix-header">
+                    PNEUMONIA
+                </div>
+
+
+                <div class="matrix-cell matrix-header">
+                    NORMAL
+                </div>
+
+                <div class="matrix-cell true-negative">
+
+                    <span>
+                        133
+                    </span>
+
+                    <small>
+                        TN
+                    </small>
+
+                </div>
+
+                <div class="matrix-cell false-positive">
+
+                    <span>
+                        101
+                    </span>
+
+                    <small>
+                        FP
+                    </small>
+
+                </div>
+
+
+                <div class="matrix-cell matrix-header">
+                    PNEUMONIA
+                </div>
+
+                <div class="matrix-cell false-negative">
+
+                    <span>
+                        3
+                    </span>
+
+                    <small>
+                        FN
+                    </small>
+
+                </div>
+
+                <div class="matrix-cell true-positive">
+
+                    <span>
+                        387
+                    </span>
+
+                    <small>
+                        TP
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="matrix-legend">
+
+            <div>
+                <span class="legend-box tn"></span>
+                TN — True Negative
+            </div>
+
+            <div>
+                <span class="legend-box fp"></span>
+                FP — False Positive
+            </div>
+
+            <div>
+                <span class="legend-box fn"></span>
+                FN — False Negative
+            </div>
+
+            <div>
+                <span class="legend-box tp"></span>
+                TP — True Positive
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         MODEL INFORMATION
+    ================================================= -->
+
+    <section class="card model-info-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <div class="mini-label">
+                    SYSTEM CONFIGURATION
+                </div>
+
+                <h2>
+                    Final Model Information
+                </h2>
+
+            </div>
+
+            <div class="card-icon">
+                ⚙️
+            </div>
+
+        </div>
+
+
+        <div class="info-grid">
+
+            <div class="info-box">
+
+                <span class="info-icon">
+                    🧠
+                </span>
+
+                <div>
+
+                    <span class="info-title">
+                        Architecture
+                    </span>
+
+                    <strong>
+                        VGG16
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-icon">
+                    🖼️
+                </span>
+
+                <div>
+
+                    <span class="info-title">
+                        Input Size
+                    </span>
+
+                    <strong>
+                        224 × 224
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-icon">
+                    🎯
+                </span>
+
+                <div>
+
+                    <span class="info-title">
+                        Threshold
+                    </span>
+
+                    <strong>
+                        0.70
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <span class="info-icon">
+                    📈
+                </span>
+
+                <div>
+
+                    <span class="info-title">
+                        Accuracy
+                    </span>
+
+                    <strong>
+                        83.33%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ANALYSIS HISTORY
+    ================================================= -->
+
+    <section class="card history-card">
+
+        <div class="card-header">
+
+            <div>
+
+                <div class="mini-label">
+                    ACTIVITY
+                </div>
+
+                <h2>
+                    Recent Analysis
+                </h2>
+
+                <p>
+                    Latest X-ray predictions
+                </p>
+
+            </div>
+
+            <div class="card-icon">
+                🕒
+            </div>
+
+        </div>
+
+
+        <div
+            class="history-list"
+            id="historyList"
+        >
+
+            <div class="history-empty">
+                No analysis performed yet.
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         DISCLAIMER
+    ================================================= -->
+
+    <section class="disclaimer">
+
+        <div class="disclaimer-icon">
+            ⚠️
+        </div>
+
+        <div>
+
+            <h3>
+                Medical Disclaimer
+            </h3>
+
+            <p>
+                This application is an AI-based research and
+                educational tool. It is not intended to replace
+                professional medical advice, diagnosis, or treatment.
+                Always consult a qualified healthcare professional
+                for medical decisions.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <div>
+        © 2026 PneumoAI
+    </div>
+
+    <div>
+        Python • FastAPI • TensorFlow • VGG16
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
